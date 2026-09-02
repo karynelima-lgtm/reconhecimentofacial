@@ -1,7 +1,9 @@
-# Dependências do projeto face_embeddings
-# Testado com Python 3.10+
+# Dependências do projeto Reconhecimento Facial
+# Compatível com Python 3.10+ e Python 3.13+
 
-deepface==0.0.93
+deepface>=0.0.100
 opencv-python==4.10.0.84
-numpy==1.26.4
-tensorflow==2.16.2
+numpy>=2.1.0
+tensorflow>=2.21.0
+tf-keras>=2.21.0
+Pillow>=10.0.0

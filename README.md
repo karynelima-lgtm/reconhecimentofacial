@@ -1,112 +1,158 @@
-# face_embeddings
+# Reconhecimento Facial com DeepFace
 
-Sistema de reconhecimento facial em Python que recebe duas imagens de rostos,
-extrai os **embeddings faciais** de cada uma usando a biblioteca [DeepFace](https://github.com/serengil/deepface),
-exibe os vetores resultantes e calcula a **distância euclidiana** e a
-**similaridade de cosseno** entre eles, além de indicar se as duas fotos
-pertencem à mesma pessoa.
+Um projeto em Python para comparar duas imagens de rosto, extrair embeddings faciais e verificar se elas pertencem à mesma pessoa.
+
+O sistema usa a biblioteca [DeepFace](https://github.com/serengil/deepface) para:
+- detectar rostos em imagens,
+- extrair vetores de embedding,
+- calcular distância euclidiana,
+- calcular similaridade de cosseno,
+- verificar se duas imagens são da mesma pessoa.
+
+Além disso, o projeto também conta com uma interface gráfica em Tkinter para facilitar a seleção das imagens e a visualização dos resultados de forma organizada.
+
+## Funcionalidades
+
+- comparação de duas imagens de rosto;
+- extração de embeddings com modelos como Facenet e ArcFace;
+- cálculo de distância euclidiana;
+- cálculo de similaridade de cosseno;
+- classificação final: mesma pessoa ou pessoas diferentes;
+- geração de arquivo JSON com os resultados;
+- interface visual para uso sem terminal.
 
 ## Estrutura do projeto
 
-```
-face_embeddings/
-├── main.py                    # Script principal (CLI)
-├── utils.py                   # Funções auxiliares reutilizáveis
-├── requirements.txt           # Dependências do projeto
-├── images/                    # Pasta para as fotos de teste
-└── README.md
+```text
+reconhecimentofacial/
+├── main.py                 # Script principal em linha de comando
+├── interface.py            # Interface visual em Tkinter
+├── utils.py                # Funções auxiliares e métricas
+├── tests/
+│   └── test_utils.py       # Testes básicos de utilitários
+├── images/
+│   ├── pessoa1.jpg
+│   └── pessoa2.jpg
+├── requirements.txt        # Dependências do projeto
+├── .gitignore              # Arquivos ignorados pelo Git
+├── README.md               # Documentação do projeto
+└── embeddings_resultado.json
 ```
 
 ## Requisitos
 
 - Python 3.10 ou superior
 - pip
+- conexão com a internet na primeira execução, para baixar os modelos do DeepFace
 
 ## Instalação
 
-1. (Recomendado) crie e ative um ambiente virtual:
-
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate      # Linux/macOS
-   venv\Scripts\activate         # Windows
-   ```
-
-2. Instale as dependências:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-   > Na primeira execução, o DeepFace faz o download automático dos pesos
-   > do modelo escolhido (ex: Facenet). É necessário ter conexão com a
-   > internet nesse primeiro uso.
-
-3. Coloque duas fotos de rosto na pasta `images/`, por exemplo:
-   - `images/pessoa1.jpg`
-   - `images/pessoa2.jpg`
-
-## Como usar
-
-Rodar com os caminhos padrão (`images/pessoa1.jpg` e `images/pessoa2.jpg`)
-e modelo padrão (`Facenet`):
+1. Clone o projeto:
 
 ```bash
-python main.py
+git clone https://github.com/karynelima-lgtm/reconhecimentofacial.git
+cd reconhecimentofacial
 ```
 
-Especificando imagens diferentes:
+2. Crie e ative um ambiente virtual:
+
+No Windows:
 
 ```bash
-python main.py --img1 images/foto_a.jpg --img2 images/foto_b.jpg
+py -m venv .venv
+.venv\Scripts\activate
 ```
 
-Trocando o modelo de embedding (ex: ArcFace, VGG-Face):
+No Linux/macOS:
 
 ```bash
-python main.py --img1 images/foto_a.jpg --img2 images/foto_b.jpg --model ArcFace
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-Outras opções disponíveis:
+3. Instale as dependências:
 
 ```bash
-python main.py --help
+py -m pip install -r requirements.txt
 ```
 
-| Argumento        | Descrição                                              | Padrão                         |
-|------------------|----------------------------------------------------------|---------------------------------|
-| `--img1`         | Caminho da primeira imagem                                | `images/pessoa1.jpg`           |
-| `--img2`         | Caminho da segunda imagem                                 | `images/pessoa2.jpg`           |
-| `--model`        | Modelo de embedding (`Facenet`, `ArcFace`, `VGG-Face`, ...)| `Facenet`                       |
-| `--detector`     | Backend de detecção de rosto                              | `opencv`                        |
-| `--output-json`  | Arquivo JSON de saída com embeddings e métricas            | `embeddings_resultado.json`    |
+> Em alguns ambientes, como Python 3.13, pode ser necessário instalar também a dependência `tf-keras` para compatibilidade com o pacote `retinaface` usado pelo DeepFace.
 
-## Exemplo de saída esperada no terminal
+## Uso via terminal
 
+### Execução padrão
+
+```bash
+py main.py
 ```
+
+Este comando usa as imagens padrão:
+- `images/pessoa1.jpg`
+- `images/pessoa2.jpg`
+
+### Informando imagens específicas
+
+```bash
+py main.py --img1 images/minha_foto_1.jpg --img2 images/minha_foto_2.jpg
+```
+
+### Alterando o modelo
+
+```bash
+py main.py --img1 images/foto_a.jpg --img2 images/foto_b.jpg --model ArcFace
+```
+
+### Verificando todas as opções
+
+```bash
+py main.py --help
+```
+
+## Uso pela interface visual
+
+Para abrir a interface gráfica:
+
+```bash
+py interface.py
+```
+
+A interface permite:
+- selecionar a imagem 1,
+- selecionar a imagem 2,
+- escolher o modelo,
+- comparar as imagens,
+- ver a classificação final,
+- salvar os resultados em JSON.
+
+## Saída esperada
+
+Ao rodar o programa, a saída no terminal inclui informações como:
+
+```text
 ============================================================
 SISTEMA DE RECONHECIMENTO FACIAL - EMBEDDINGS (DeepFace)
 ============================================================
 Modelo selecionado : Facenet
-Imagem 1            : images/pessoa1.jpg
-Imagem 2            : images/pessoa2.jpg
+Imagem 1            : images\pessoa1.jpg
+Imagem 2            : images\pessoa2.jpg
 
---- Rosto 1 (images/pessoa1.jpg) ---
+--- Rosto 1 ---
 Dimensão do vetor: 128
-Embedding (resumo): [0.1234, -0.0456, 0.7890, -0.3321, 0.0021, ..., 0.5567, -0.1298, 0.0034, 0.4456, -0.0987]
+Embedding (resumo): [...]
 
---- Rosto 2 (images/pessoa2.jpg) ---
+--- Rosto 2 ---
 Dimensão do vetor: 128
-Embedding (resumo): [0.2201, -0.0399, 0.6654, -0.2987, 0.0102, ..., 0.4321, -0.1750, 0.0211, 0.3987, -0.1120]
+Embedding (resumo): [...]
 
 --- Métricas de comparação ---
-Distância euclidiana : 6.8342
-Similaridade de cosseno: 0.9123
+Distância euclidiana : 10.4547
+Similaridade de cosseno: 0.6265
 
 --- Resultado da verificação (DeepFace.verify) ---
-São a mesma pessoa? : NÃO
-Distância calculada  : 6.8342
-Threshold usado      : 10.0000
+São a mesma pessoa? : SIM
+Classificação       : Mesma pessoa
+Distância calculada  : 0.3735
+Threshold usado      : 0.4000
 Métrica de distância : euclidean
 Modelo               : Facenet
 
@@ -115,34 +161,77 @@ Embeddings e métricas salvos em: embeddings_resultado.json
 Processamento concluído com sucesso.
 ```
 
-> Os valores acima são apenas ilustrativos — os números reais dependem
-> das imagens e do modelo usados.
+## Arquivo JSON gerado
+
+Ao final da execução, o projeto salva um arquivo chamado `embeddings_resultado.json` com:
+- caminho das imagens;
+- embedding completo;
+- dimensão do embedding;
+- distância euclidiana;
+- similaridade de cosseno;
+- resposta do `DeepFace.verify()`.
+
+## Testes
+
+O projeto inclui testes básicos para validação das funções utilitárias.
+
+Para executar:
+
+```bash
+py -m unittest tests/test_utils.py -v
+```
+
+## Modelos suportados
+
+Os modelos mais comuns aceitos pelo projeto incluem:
+- Facenet
+- Facenet512
+- ArcFace
+- VGG-Face
+- OpenFace
+- DeepFace
+- Dlib
+- SFace
 
 ## Tratamento de erros
 
-- **Imagem inexistente**: se `--img1` ou `--img2` apontar para um arquivo
-  que não existe, o script exibe uma mensagem clara e encerra com código
-  de saída 1, sem tentar processar.
-- **Nenhum rosto detectado**: se o DeepFace não conseguir detectar um
-  rosto na imagem, o script exibe uma mensagem explicando qual imagem
-  falhou, em vez de travar com um erro genérico.
+O sistema foi desenvolvido para lidar com alguns cenários comuns:
+- imagem não encontrada;
+- arquivo inexistente;
+- nenhuma face detectada;
+- problema de incompatibilidade da versão do ambiente.
 
-## Arquivo JSON gerado
+## Solução de problemas comuns
 
-Ao final da execução, um arquivo JSON (por padrão `embeddings_resultado.json`)
-é salvo no diretório atual, contendo:
+### 1) Comando `python` não encontrado no Windows
+Use:
 
-- Caminho de cada imagem e seu embedding completo
-- Dimensão de cada vetor
-- Métricas calculadas (distância euclidiana, similaridade de cosseno)
-- Resultado completo de `DeepFace.verify()` (veredito, distância, threshold, modelo)
+```bash
+py
+```
 
-Isso permite consultar os resultados posteriormente sem precisar
-reprocessar as imagens.
+### 2) Erro de `tensorflow` ou `retinaface`
+Instale a dependência necessária:
 
-## Modelos de embedding suportados
+```bash
+py -m pip install tf-keras
+```
 
-O parâmetro `--model` aceita, entre outros: `Facenet`, `Facenet512`,
-`ArcFace`, `VGG-Face`, `OpenFace`, `DeepFace`, `Dlib`, `SFace`. Modelos
-diferentes produzem vetores de dimensões diferentes (ex: Facenet gera
-vetores de 128 dimensões, enquanto ArcFace gera vetores de 512).
+### 3) Imagem sem rosto detectado
+Verifique se a imagem realmente contém um rosto visível e com boa iluminação.
+
+## Licença
+
+Este projeto é apenas para uso educacional e demonstrativo.
+
+## Autor
+
+Karyne Lima
+
+## Repositório remoto
+
+https://github.com/karynelima-lgtm/reconhecimentofacial
+
+## Contribuição
+
+Contribuições são bem-vindas. Caso queira colaborar, basta abrir um pull request com melhorias, correções ou novos recursos.
