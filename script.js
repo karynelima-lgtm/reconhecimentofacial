@@ -1,4 +1,4 @@
-const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
 const THRESHOLD = 0.6;
 
 const statusEl = document.getElementById('status');
