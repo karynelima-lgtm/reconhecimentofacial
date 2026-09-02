@@ -1,0 +1,7 @@
+# Dependências do projeto face_embeddings
+# Testado com Python 3.10+
+
+deepface==0.0.93
+opencv-python==4.10.0.84
+numpy==1.26.4
+tensorflow==2.16.2
