@@ -220,6 +220,30 @@ py -m pip install tf-keras
 ### 3) Imagem sem rosto detectado
 Verifique se a imagem realmente contém um rosto visível e com boa iluminação.
 
+## GitHub Pages
+
+A versão web do projeto foi adaptada para rodar diretamente no navegador e pode ser publicada no GitHub Pages.
+
+### Site online
+
+Depois de ativar o GitHub Pages no repositório, o projeto será acessível em:
+
+```text
+https://karynelima-lgtm.github.io/reconhecimentofacial/
+```
+
+### Como ativar no GitHub
+
+1. Acesse o repositório no GitHub.
+2. Vá em `Settings`.
+3. Abra a seção `Pages`.
+4. Em `Build and deployment`, escolha `Deploy from a branch`.
+5. Selecione a branch `main` e a pasta `/root`.
+6. Salve.
+7. Aguarde alguns minutos e o site ficará disponível online.
+
+> A pasta raiz do projeto já contém `index.html`, `style.css`, `script.js` e `.nojekyll`, que são os arquivos necessários para o funcionamento do GitHub Pages.
+
 ## Licença
 
 Este projeto é apenas para uso educacional e demonstrativo.

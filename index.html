@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reconhecimento Facial</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <h1>Reconhecimento Facial</h1>
+        <p>Compare duas fotos e descubra se são da mesma pessoa.</p>
+      </header>
+
+      <section class="upload-grid">
+        <div class="card">
+          <label for="image1">Imagem 1</label>
+          <input id="image1" type="file" accept="image/*" />
+          <div class="preview-box">
+            <img id="preview1" alt="Prévia da imagem 1" />
+            <span class="placeholder" id="placeholder1">Selecione uma imagem</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <label for="image2">Imagem 2</label>
+          <input id="image2" type="file" accept="image/*" />
+          <div class="preview-box">
+            <img id="preview2" alt="Prévia da imagem 2" />
+            <span class="placeholder" id="placeholder2">Selecione uma imagem</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="compareBtn" type="button">Comparar rostos</button>
+      </div>
+
+      <div id="status" class="status info">Carregando modelos de reconhecimento facial...</div>
+
+      <section id="resultBox" class="result hidden" aria-live="polite">
+        <h2>Resultado</h2>
+        <p id="resultText">Aguardando comparação.</p>
+        <p id="distanceText"></p>
+        <p id="confidenceText"></p>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
