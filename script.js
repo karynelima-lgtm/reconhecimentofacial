@@ -1,6 +1,7 @@
 const MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
 const THRESHOLD = 0.6;
 
+const modelSelect = document.getElementById('modelSelect');
 const statusEl = document.getElementById('status');
 const resultBox = document.getElementById('resultBox');
 const resultText = document.getElementById('resultText');
@@ -15,6 +16,19 @@ const preview1 = document.getElementById('preview1');
 const preview2 = document.getElementById('preview2');
 const placeholder1 = document.getElementById('placeholder1');
 const placeholder2 = document.getElementById('placeholder2');
+
+const DETECTOR_CONFIGS = {
+  tinyFaceDetector: {
+    label: 'Tiny Face Detector',
+    load: () => faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+    options: () => new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 }),
+  },
+  ssdMobilenetv1: {
+    label: 'SSD Mobilenet V1',
+    load: () => faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+    options: () => new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }),
+  },
+};
 
 function setStatus(message, type = 'info') {
   statusEl.textContent = message;
@@ -52,17 +66,26 @@ async function carregarModelos() {
     throw new Error('A biblioteca face-api.js não foi carregada.');
   }
 
+  const modeloSelecionado = modelSelect.value;
+  const config = DETECTOR_CONFIGS[modeloSelecionado] || DETECTOR_CONFIGS.tinyFaceDetector;
+
   await Promise.all([
-    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+    config.load(),
     faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
     faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
   ]);
 }
 
+function getDetectorOptions() {
+  const modeloSelecionado = modelSelect.value;
+  const config = DETECTOR_CONFIGS[modeloSelecionado] || DETECTOR_CONFIGS.tinyFaceDetector;
+  return config.options();
+}
+
 async function extrairDescricao(file) {
   const img = await faceapi.bufferToImage(file);
   const detection = await faceapi
-    .detectSingleFace(img, new faceapi.TinyFaceDetectorOptions())
+    .detectSingleFace(img, getDetectorOptions())
     .withFaceLandmarks()
     .withFaceDescriptor();
 
@@ -87,6 +110,9 @@ async function compararImagens() {
   setStatus('Processando imagens e comparando rostos...', 'info');
 
   try {
+    const modeloSelecionado = modelSelect.value;
+    const config = DETECTOR_CONFIGS[modeloSelecionado] || DETECTOR_CONFIGS.tinyFaceDetector;
+
     await carregarModelos();
 
     const descriptor1 = await extrairDescricao(file1);
@@ -105,9 +131,7 @@ async function compararImagens() {
     resultBox.classList.remove('hidden');
 
     setStatus(
-      samePerson
-        ? 'Comparação concluída: rostos semelhantes dentro do limite estabelecido.'
-        : 'Comparação concluída: rostos diferentes no limiar atual.',
+      `${config.label} selecionado. ${samePerson ? 'Comparação concluída: rostos semelhantes dentro do limite estabelecido.' : 'Comparação concluída: rostos diferentes no limiar atual.'}`,
       samePerson ? 'success' : 'info'
     );
   } catch (error) {
@@ -121,9 +145,20 @@ async function compararImagens() {
 compareBtn.addEventListener('click', compararImagens);
 
 window.addEventListener('DOMContentLoaded', async () => {
+  modelSelect.addEventListener('change', async () => {
+    setStatus(`Modelo selecionado: ${DETECTOR_CONFIGS[modelSelect.value].label}. Recarregando recursos...`, 'info');
+    try {
+      await carregarModelos();
+      setStatus(`Modelo carregado: ${DETECTOR_CONFIGS[modelSelect.value].label}. Você já pode comparar as imagens.`, 'success');
+    } catch (error) {
+      setStatus('Não foi possível carregar os modelos selecionados. Verifique sua conexão com a internet.', 'error');
+      console.error(error);
+    }
+  });
+
   try {
     await carregarModelos();
-    setStatus('Modelos carregados. Você já pode comparar as imagens.', 'success');
+    setStatus(`Modelo carregado: ${DETECTOR_CONFIGS[modelSelect.value].label}. Você já pode comparar as imagens.`, 'success');
   } catch (error) {
     setStatus('Não foi possível carregar os modelos. Verifique sua conexão com a internet.', 'error');
     console.error(error);
