@@ -1,9 +1,17 @@
-# Dependências do projeto Reconhecimento Facial
-# Compatível com Python 3.10+ e Python 3.13+
+# Dependências básicas do projeto (instale UMA das opções de TensorFlow abaixo)
+# Compatível com Python 3.10+
 
 deepface>=0.0.100
 opencv-python==4.10.0.84
-numpy>=2.1.0
-tensorflow>=2.21.0
-tf-keras>=2.21.0
+numpy>=1.24.0
 Pillow>=10.0.0
+
+# Observação: TensorFlow não está incluído por padrão aqui para evitar
+# conflitos em ambientes com/sem GPU. Instale APENAS uma das opções:
+# - Para a maioria dos usuários (CPU only, recomendado):
+#   pip install tensorflow-cpu
+# - Para quem possui GPU e CUDA compatível:
+#   pip install tensorflow
+
+# Exemplo (opcional):
+# tensorflow-cpu>=2.11.0

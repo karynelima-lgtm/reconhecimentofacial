@@ -1,15 +1,11 @@
-# Reconhecimento Facial com DeepFace
+# Reconhecimento Facial com DeepFace (Execução local)
 
-Um projeto em Python para comparar duas imagens de rosto, extrair embeddings faciais e verificar se elas pertencem à mesma pessoa.
+Projeto em Python para comparar duas imagens de rosto, extrair embeddings faciais
+e verificar se pertençam à mesma pessoa usando a biblioteca DeepFace.
 
-O sistema usa a biblioteca [DeepFace](https://github.com/serengil/deepface) para:
-- detectar rostos em imagens,
-- extrair vetores de embedding,
-- calcular distância euclidiana,
-- calcular similaridade de cosseno,
-- verificar se duas imagens são da mesma pessoa.
-
-Além disso, o projeto também conta com uma interface gráfica em Tkinter para facilitar a seleção das imagens e a visualização dos resultados de forma organizada.
+Este repositório é preparado para ser executado localmente por qualquer pessoa
+que clonar o seu GitHub — inclui scripts de setup, instruções para CPU/GPU,
+uma interface gráfica em Tkinter e um CLI simples (`main.py`).
 
 ## Funcionalidades
 
@@ -45,68 +41,81 @@ reconhecimentofacial/
 - pip
 - conexão com a internet na primeira execução, para baixar os modelos do DeepFace
 
-## Instalação
+## Instalação rápida (recomendado)
 
-1. Clone o projeto:
+Incluí scripts de ajuda em `scripts/` para configurar ambientes Windows e Unix
+e um `Dockerfile` para execução em container. Há duas abordagens principais:
 
-```bash
-git clone https://github.com/karynelima-lgtm/reconhecimentofacial.git
-cd reconhecimentofacial
-```
+Opção A — Ambiente virtual + TensorFlow (recomendado, multiplataforma)
 
-2. Crie e ative um ambiente virtual:
+No Windows (PowerShell):
 
-No Windows:
-
-```bash
+```powershell
 py -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+# Instale uma das opções de TF: CPU (recomendado) ou GPU
+pip install tensorflow-cpu
 ```
 
-No Linux/macOS:
+No Linux/macOS (bash):
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+pip install tensorflow-cpu
 ```
 
-3. Instale as dependências:
+Opção B — Conda (recomendado para usuários com GPU/ambientes complexos)
 
 ```bash
-py -m pip install -r requirements.txt
+conda create -n faceenv python=3.10 -y
+conda activate faceenv
+pip install -r requirements.txt
+# Para GPU: instale tensorflow com a versão CUDA compatível (veja docs do TF)
 ```
 
-> Em alguns ambientes, como Python 3.13, pode ser necessário instalar também a dependência `tf-keras` para compatibilidade com o pacote `retinaface` usado pelo DeepFace.
-
-## Uso via terminal
-
-### Execução padrão
+Opção C — Docker (isolado, útil para terceiros testarem rapidamente)
 
 ```bash
+docker build -t reconhecimentofacial:latest .
+docker run --rm -it reconhecimentofacial:latest
+```
+
+## Uso
+
+- Executar o modo CLI (usa `main.py`):
+
+```powershell
 py main.py
+# exemplos:
+py main.py --img1 images/pessoa1.jpg --img2 images/pessoa2.jpg --model ArcFace
 ```
 
-Este comando usa as imagens padrão:
-- `images/pessoa1.jpg`
-- `images/pessoa2.jpg`
+- Executar a interface gráfica (Tkinter):
 
-### Informando imagens específicas
-
-```bash
-py main.py --img1 images/minha_foto_1.jpg --img2 images/minha_foto_2.jpg
+```powershell
+py interface.py
 ```
 
-### Alterando o modelo
+- Scripts prontos (Windows PowerShell):
 
-```bash
-py main.py --img1 images/foto_a.jpg --img2 images/foto_b.jpg --model ArcFace
+```powershell
+# Cria e instala dependências (inclui tensorflow-cpu)
+.
+\scripts\setup_windows.ps1
+# Executa GUI
+.
+\scripts\run_gui.ps1
+# Executa CLI
+.
+\scripts\run_cli.ps1 -- --img1 images/pessoa1.jpg --img2 images/pessoa2.jpg
 ```
 
-### Verificando todas as opções
-
-```bash
-py main.py --help
-```
+Observação: os scripts `scripts/setup_unix.sh` e `scripts/run_unix.sh` funcionam em Linux/macOS.
 
 ## Uso pela interface visual
 
@@ -220,29 +229,11 @@ py -m pip install tf-keras
 ### 3) Imagem sem rosto detectado
 Verifique se a imagem realmente contém um rosto visível e com boa iluminação.
 
-## GitHub Pages
+## Observação sobre GitHub Pages
 
-A versão web do projeto foi adaptada para rodar diretamente no navegador e pode ser publicada no GitHub Pages.
-
-### Site online
-
-Depois de ativar o GitHub Pages no repositório, o projeto será acessível em:
-
-```text
-https://karynelima-lgtm.github.io/reconhecimentofacial/
-```
-
-### Como ativar no GitHub
-
-1. Acesse o repositório no GitHub.
-2. Vá em `Settings`.
-3. Abra a seção `Pages`.
-4. Em `Build and deployment`, escolha `Deploy from a branch`.
-5. Selecione a branch `main` e a pasta `/root`.
-6. Salve.
-7. Aguarde alguns minutos e o site ficará disponível online.
-
-> A pasta raiz do projeto já contém `index.html`, `style.css`, `script.js` e `.nojekyll`, que são os arquivos necessários para o funcionamento do GitHub Pages.
+Este repositório NÃO é destinado a rodar o backend / processamento pesado no GitHub Pages.
+O objetivo aqui é fornecer uma experiência local (ou via container) para quem clonar o
+repositório e quiser executar os modelos suportados pelo DeepFace.
 
 ## Licença
 
